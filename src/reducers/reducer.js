@@ -1,9 +1,7 @@
-import { REMOVE_FEATURE, ADD_FEATURE } from "../actions/actions";
-// id
-// name
-// price
+import React from "react";
+import { ADD_FEATURE, REMOVE_FEATURE } from "../actions/actions";
 
-export const initialState = {
+const initialState = {
   additionalPrice: 0,
   car: {
     price: 26395,
@@ -20,4 +18,35 @@ export const initialState = {
   ],
 };
 
-export const reducer = (state = initialState, action) => {};
+export const reducer = (state = initialState, action) => {
+  switch (action.type) {
+    case ADD_FEATURE:
+      return {
+        ...state,
+        car: {
+          ...state.car,
+          features: [...state.car.features, action.payload],
+        },
+        additionalPrice: state.additionalPrice + action.payload.price,
+        additionalFeatures: state.additionalFeatures.filter((item) => {
+          return item.id !== action.payload.id;
+        }),
+      };
+    case REMOVE_FEATURE:
+      return {
+        ...state,
+        car: {
+          ...state.car,
+          features: state.car.features.filter((feature) => {
+            return feature.id !== action.payload.id;
+          }),
+        },
+        additionalPrice: state.additionalPrice - action.payload.price,
+        additionalFeatures: [...state.additionalFeatures, action.payload],
+      };
+
+    default:
+      console.log("inside default");
+      return state;
+  }
+};
